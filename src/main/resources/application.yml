@@ -1,13 +1,13 @@
 spring:
   profiles:
-    active: blue
+    active: green
     group:
       local: local, common, secret
       blue: blue, common, secret
       green: green, common, secret
 
 server:
-  env: blue
+  env: green
 
 
 ---
