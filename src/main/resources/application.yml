@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: blue
+    active: green
     group:
       local: local, common, secret
       blue: blue, common, secret
