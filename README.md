@@ -3,7 +3,7 @@
 
 ## 테스트 목적
 
-nginx와 도커 그리고 github action을 통해서 blue green 무중단 배포를 위한 목적으로 테스트를 진행하였다.
+nginx와 Docker 그리고 github action을 통해서 CICD를 만들고 blue green 무중단 배포를 위한 목적으로 테스트를 진행하였다.
 
 
 
