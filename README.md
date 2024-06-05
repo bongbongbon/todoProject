@@ -3,22 +3,22 @@
 ## CICD.yml (github action)
 
 
-name: CI
-
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
-permissions:
-  contents: read
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
+    name: CI
+    
+    on:
+      push:
+        branches: [ "main" ]
+      pull_request:
+        branches: [ "main" ]
+    
+    permissions:
+      contents: read
+    
+    jobs:
+      build:
+        runs-on: ubuntu-latest
+        steps:
+          - uses: actions/checkout@v3
 
       - name: Install JDK 17
         uses: actions/setup-java@v3
@@ -43,32 +43,32 @@ jobs:
       - name: Push Docker
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/live_server:latest
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Set target IP
-        run: |
-          STATUS=$(curl -o /dev/null -w "%{http_code}" "http://${{ secrets.LIVE_SERVER_IP }}/env")
-          echo $STATUS
-          if [ $STATUS = 200 ]; then
-            CURRENT_UPSTREAM=$(curl -s "http://${{ secrets.LIVE_SERVER_IP }}/env")
-          else
-            CURRENT_UPSTREAM=green
-          fi
-          echo CURRENT_UPSTREAM=$CURRENT_UPSTREAM >> $GITHUB_ENV
-          if [ $CURRENT_UPSTREAM = blue ]; then
-            echo "CURRENT_PORT=8080" >> $GITHUB_ENV
-            echo "STOPPED_PORT=8081" >> $GITHUB_ENV
-            echo "TARGET_UPSTREAM=green" >> $GITHUB_ENV
-          elif [ $CURRENT_UPSTREAM = green ]; then
-            echo "CURRENT_PORT=8081" >> $GITHUB_ENV
-            echo "STOPPED_PORT=8080" >> $GITHUB_ENV
-            echo "TARGET_UPSTREAM=blue" >> $GITHUB_ENV
-          else
-            echo "error"
-            exit 1
-          fi
+    deploy:
+      needs: build
+      runs-on: ubuntu-latest
+      steps:
+        - name: Set target IP
+          run: |
+            STATUS=$(curl -o /dev/null -w "%{http_code}" "http://${{ secrets.LIVE_SERVER_IP }}/env")
+            echo $STATUS
+            if [ $STATUS = 200 ]; then
+              CURRENT_UPSTREAM=$(curl -s "http://${{ secrets.LIVE_SERVER_IP }}/env")
+            else
+              CURRENT_UPSTREAM=green
+            fi
+            echo CURRENT_UPSTREAM=$CURRENT_UPSTREAM >> $GITHUB_ENV
+            if [ $CURRENT_UPSTREAM = blue ]; then
+              echo "CURRENT_PORT=8080" >> $GITHUB_ENV
+              echo "STOPPED_PORT=8081" >> $GITHUB_ENV
+              echo "TARGET_UPSTREAM=green" >> $GITHUB_ENV
+            elif [ $CURRENT_UPSTREAM = green ]; then
+              echo "CURRENT_PORT=8081" >> $GITHUB_ENV
+              echo "STOPPED_PORT=8080" >> $GITHUB_ENV
+              echo "TARGET_UPSTREAM=blue" >> $GITHUB_ENV
+            else
+              echo "error"
+              exit 1
+            fi
 
       - name: Docker compose
         uses: appleboy/ssh-action@master
