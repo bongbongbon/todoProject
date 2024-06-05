@@ -3,7 +3,7 @@
 
 ## 테스트 목적
 
-studywithmePorject라는 개인 프로젝트에 적용하고 싶었으나 ec2 사양으로 인한 튕김 떄문에 blue green 무중단 배포를 위한 목적으로 테스트를 진행하였다.
+nginx와 도커 그리고 github action을 통해서 blue green 무중단 배포를 위한 목적으로 테스트를 진행하였다.
 
 
 
