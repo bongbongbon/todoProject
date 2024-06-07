@@ -17,8 +17,6 @@ public class TestController {
     @GetMapping("/")
     public ResponseEntity<?> start() {
 
-    ;
-
         return ResponseEntity.ok(testRepository.save(TestEntity.builder()
                 .title("제목")
                 .content("내용")
