@@ -11,7 +11,7 @@ public class TestController {
     @GetMapping("/")
     public ResponseEntity<?> start() {
 
-        String data = "1";
+        String data = "2";
 
         return ResponseEntity.ok(data);
     }
