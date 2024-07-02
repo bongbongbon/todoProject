@@ -34,6 +34,13 @@ jobs:
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/backend:latest .
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/backend:latest
 
-      - name: Deploy Docker Compose
-        run: |
-          docker-compose -f docker-compose.yml up -d
+      - name: Docker compose
+        uses: appleboy/ssh-action@master
+        with:
+          username: ubuntu
+          host: ${{ secrets.LIVE_SERVER_IP }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script_stop: true
+          script: |
+            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/live_server:latest
+            sudo docker-compose -f docker-compose.yml up -d
