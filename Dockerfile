@@ -1,5 +1,5 @@
 # OpenJDK 17을 기반으로 하는 Docker 이미지 사용
-FROM adoptopenjdk/openjdk17:jre-17.0.1_12-alpine
+FROM --platform=linux/amd64 openjdk:17-alpine
 
 # Docker 컨테이너 내부의 /tmp 디렉토리에 볼륨 마운트
 VOLUME /tmp
