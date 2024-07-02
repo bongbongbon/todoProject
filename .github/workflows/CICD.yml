@@ -37,6 +37,6 @@ jobs:
 
       - name: Deploy to EC2
         run: |
-          ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_PUBLIC_IP }} "docker pull ${{ secrets.DOCKERHUB_USERNAME }}/backend:latest && docker stop backend || true && docker rm backend || true && docker run -d --name backend -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/backend:latest"
+          ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.LIVE_SERVER_IP }} "docker pull ${{ secrets.DOCKERHUB_USERNAME }}/backend:latest && docker stop backend || true && docker rm backend || true && docker run -d --name backend -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/backend:latest"
         env:
           SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
