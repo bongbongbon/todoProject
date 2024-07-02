@@ -47,3 +47,4 @@ jobs:
           script_stop: true
           script: |
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/live_server:latest
+            sudo docker-compose -f docker-compose.yml up -d
