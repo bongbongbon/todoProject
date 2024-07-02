@@ -1,7 +1,7 @@
 # 기본 설정
 spring:
   profiles:
-    active: dev
+    active: prod
 
 # 운영 환경 설정
 ---
