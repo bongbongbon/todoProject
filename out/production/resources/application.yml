@@ -1,54 +1,63 @@
+# 기본 설정
 spring:
   profiles:
-    active: blue
-    group:
-      local: local, common, secret
-      blue: blue, common, secret
-      green: green, common, secret
+    active: dev
 
-server:
-  env: blue
-
-
+# 운영 환경 설정
 ---
-
-
 spring:
   config:
     activate:
-      on-profile: local
+      on-profile: prod
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://database-1.c72auqk86wix.ap-northeast-2.rds.amazonaws.com:3306/todoProject?serverTimezone=Asia/Seoul
+    username: admin
+    password: ckawhgdmsryghl1!
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+  redis:
+    host: 43.200.95.124
+    port: 6379
+  server:
+    port: 8080
+  logging:
+    level:
+      root: INFO
+      com.example: DEBUG
+  jwt:
+    header: Authorization
+    prefix: Bearer
+    tokenExpirationTime: 600
+    secret: c3ByaW5nYm9vdC1qd3QtdHV0b3JpYWwtc3ByaW5nYm9vdC1qd3QtdHV0b3JpYWwtc3ByaW5nYm9vdC1qd3QtdHV0b3JpYWwK
 
-server:
-  port: 8080
-  serverAddress: localhost
-
-serverName: local_server
-
+# 개발 환경 설정
 ---
-
 spring:
   config:
     activate:
-      on-profile: blue
-
-server:
-  port: 8080
-  serverAddress: 43.203.54.25
-
-serverName: blue_server
-
----
-
-spring:
-  config:
-    activate:
-      on-profile: green
-
-server:
-  port: 8081
-  serverAddress: 43.203.54.25
-
-serverName: green_server
-
----
-
+      on-profile: dev
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/runningCrew?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root
+    password: Jesuslove1!
+  jpa:
+    hibernate:
+      ddl-auto: update # 테이블 자동 업데이트 (운영 환경에서는 적절히 설정 필요)
+    show-sql: true # SQL 쿼리 로깅
+    properties:
+      hibernate:
+        format_sql: true
+  redis:
+    host: 43.200.95.124
+    port: 6379
+  server:
+    port: 8080 # 서버 포트 설정
+  jwt:
+    header: Authorization
+    prefix: Bearer
+    tokenExpirationTime: 600
+    secret: c3ByaW5nYm9vdC1qd3QtdHV0b3JpYWwtc3ByaW5nYm9vdC1qd3QtdHV0b3JpYWwtc3ByaW5nYm9vdC1qd3QtdHV0b3JpYWwK
