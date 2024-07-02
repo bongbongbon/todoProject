@@ -34,3 +34,6 @@ jobs:
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/backend:latest .
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/backend:latest
 
+      - name: Deploy Docker Compose
+        run: |
+          docker-compose -f docker-compose.yml up -d
