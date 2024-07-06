@@ -6,14 +6,13 @@ import com.example.cicdtest.domain.users.User;
 import com.example.cicdtest.domain.users.common.UserLevel;
 import com.example.cicdtest.domain.users.common.UserProfileImg;
 import com.example.cicdtest.domain.users.common.UserStatus;
-import com.example.cicdtest.dto.LoginRequest;
-import com.example.cicdtest.dto.SignupRequest;
+import com.example.cicdtest.controller.auth.request.LoginRequest;
+import com.example.cicdtest.controller.auth.request.SignupRequest;
 import com.example.cicdtest.dto.UserResponse;
 import com.example.cicdtest.dto.UserTokenDto;
 import com.example.cicdtest.common.jwt.JwtProperties;
 import com.example.cicdtest.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -21,6 +20,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -31,23 +31,37 @@ public class UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtProperties jwtProperties;
+    private final S3Service s3Service;
 
 
 
-    public UserResponse signUp(SignupRequest request) {
+    public UserResponse signUp(String email,
+                               String password,
+                               String passwordCheck,
+                               String nickname,
+                               MultipartFile profileImage
+                               ) {
 
         // 이메일 중복확인
-        isExistUserEmail(request.getEmail());
+        isExistUserEmail(email);
 
-        checkPassword(request.getPassword(), request.getPasswordCheck());
+        checkPassword(password, passwordCheck);
+
+        String profileImageUrl = null;
+
+
+        if (profileImage != null) {
+            profileImageUrl = s3Service.uploadImage(profileImage);
+        }
+
 
         User user =  User.builder()
-                .email(request.getEmail())
-                .password(bCryptPasswordEncoder.encode(request.getPassword()))
+                .email(email)
+                .password(bCryptPasswordEncoder.encode(password))
                 .userLevel(UserLevel.USER)
                 .userStatus(UserStatus.NORMAL)
-                .profileImg(UserProfileImg.IMG_FINN)
-                .nickname(request.getNickname())
+                .profileImg(profileImageUrl)
+                .nickname(nickname)
                 .build();
 
         return UserResponse.fromEntity(userRepository.save(user));

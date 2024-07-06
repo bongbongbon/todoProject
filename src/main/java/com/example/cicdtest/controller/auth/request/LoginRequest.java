@@ -1,4 +1,4 @@
-package com.example.cicdtest.dto;
+package com.example.cicdtest.controller.auth.request;
 
 
 import lombok.*;

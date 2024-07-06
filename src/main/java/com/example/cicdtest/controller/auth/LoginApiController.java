@@ -1,18 +1,15 @@
 package com.example.cicdtest.controller.auth;
 
-import com.example.cicdtest.common.response.ApiSuccessResponse;
-import com.example.cicdtest.dto.LoginRequest;
-import com.example.cicdtest.dto.SignupRequest;
+import com.example.cicdtest.controller.auth.request.LoginRequest;
+import com.example.cicdtest.controller.auth.request.SignupRequest;
 import com.example.cicdtest.dto.UserResponse;
 import com.example.cicdtest.dto.UserTokenDto;
 import com.example.cicdtest.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,8 +19,12 @@ public class LoginApiController {
     private final UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<UserResponse> register(@RequestBody SignupRequest request) {
-        UserResponse successMember = userService.signUp(request);
+    public ResponseEntity<UserResponse> register(      @RequestPart("email") String email,
+                                                       @RequestPart("password") String password,
+                                                       @RequestPart("passwordCheck") String passwordCheck,
+                                                       @RequestPart("nickname") String nickname,
+                                                       @RequestPart("profileImage") MultipartFile profileImage) {
+        UserResponse successMember = userService.signUp(email,password, passwordCheck, nickname, profileImage);
         return ResponseEntity.status(HttpStatus.OK).body(successMember);
     }
 

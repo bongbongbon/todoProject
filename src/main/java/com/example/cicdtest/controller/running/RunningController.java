@@ -29,8 +29,7 @@ public class RunningController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createRunning(@AuthenticationPrincipal User user,
-                                           @RequestBody RunningRequest runningRequest,
-                                           BindingResult bindingResult) {
+                                           @RequestBody RunningRequest runningRequest) {
 
         RunningResponse runningResponse = runningService.createRunning(user, runningRequest);
 
@@ -53,6 +52,16 @@ public class RunningController {
     public ApiSuccessResponse<?> getRunningList(@PathVariable(name = "id") Long id) {
 
         return ApiSuccessResponse.from(runningService.getRunningById(id));
+    }
+
+
+    @PatchMapping("/update/{id}")
+    public ApiSuccessResponse<?> updateRunning(@AuthenticationPrincipal User user,
+                                               @PathVariable(name = "id") Long id,
+                                               @RequestBody RunningRequest runningRequest) {
+
+
+        return ApiSuccessResponse.from(runningService.updateRunning(user, id, runningRequest));
     }
 
     @DeleteMapping("/delete/{id}")

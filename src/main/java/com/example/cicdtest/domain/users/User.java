@@ -42,14 +42,14 @@ public class User extends BaseEntity implements UserDetails {
 
     private String nickname;
 
+    @Column(columnDefinition = "TEXT")
+    private String profileImg;
+
     @Enumerated(EnumType.STRING)
     private UserLevel userLevel;
 
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus;
-
-    @Enumerated(EnumType.STRING)
-    private UserProfileImg profileImg;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @ToString.Exclude

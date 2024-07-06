@@ -1,8 +1,9 @@
-package com.example.cicdtest.dto;
+package com.example.cicdtest.controller.auth.request;
 
 import com.example.cicdtest.domain.users.User;
 import jakarta.persistence.Column;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
@@ -15,6 +16,7 @@ public class SignupRequest {
     private String password;
     private String passwordCheck;
     private String email;
+    private MultipartFile profileImg;
 
 
     public User ofEntity() {

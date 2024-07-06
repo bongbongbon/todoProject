@@ -2,6 +2,7 @@ package com.example.cicdtest.controller.running.response;
 
 import com.example.cicdtest.domain.boards.Board;
 import com.example.cicdtest.domain.running.Running;
+import com.example.cicdtest.domain.running.common.RunningStatus;
 import com.example.cicdtest.domain.users.User;
 import com.example.cicdtest.dto.BoardResponse;
 import com.example.cicdtest.dto.UserResponse;
@@ -49,6 +50,10 @@ public class RunningResponse {
 
     private Integer limitedPeople;
 
+    private RunningStatus runningStatus;
+
+    private Integer runningUserCount;
+
     @JsonSerialize(using = LocalDateSerializer.class)
     @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate date;
@@ -58,6 +63,7 @@ public class RunningResponse {
     private LocalTime time;
 
     private UserResponse user;
+
 
 
     public static RunningResponse fromEntity(Running running) {
@@ -73,6 +79,8 @@ public class RunningResponse {
                 .limitedPeople(running.getLimitedPeople())
                 .date(running.getDate())
                 .time(running.getTime())
+                .runningStatus(running.getRunningStatus())
+                .runningUserCount(getRunningCount(running))
                 .user(UserResponse.fromEntity(running.getUser()))
                 .build();
     }
@@ -82,6 +90,15 @@ public class RunningResponse {
         return runningList.stream()
                 .map(RunningResponse::fromEntity)
                 .collect(Collectors.toList());
+    }
+
+    public static Integer getRunningCount(Running running) {
+        if (running.getRunningUserList() == null) {
+            return 0;
+        }
+        System.out.println(running.getRunningUserList().size());
+        return running.getRunningUserList().size();
+
     }
 
 

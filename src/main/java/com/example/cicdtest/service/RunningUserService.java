@@ -4,16 +4,19 @@ import com.example.cicdtest.common.exception.CustomException;
 import com.example.cicdtest.controller.running.response.RunningResponse;
 import com.example.cicdtest.controller.runninguser.response.RunningUserResponse;
 import com.example.cicdtest.domain.running.Running;
+import com.example.cicdtest.domain.running.common.RunningStatus;
 import com.example.cicdtest.domain.runninguser.RunningUser;
 import com.example.cicdtest.domain.users.User;
 import com.example.cicdtest.repository.RunningRepository;
 import com.example.cicdtest.repository.RunningUserRepository;
 import com.example.cicdtest.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,6 +26,8 @@ public class RunningUserService {
     private final RunningUserRepository runningUserRepository;
     private final RunningRepository runningRepository;
     private final UserRepository userRepository;
+    private final RedisTemplate<String, Object> redisTemplate;
+    private static final String RUNNING_CACHE_PREFIX = "running:";
 
     public RunningUserResponse join(User user, Long runningId) {
 
@@ -48,7 +53,16 @@ public class RunningUserService {
 
         // 팀의 인원이 꽉찼을때
         if (running.getLimitedPeople() == running.getRunningUserList().size()) {
+
             throw CustomException.TEAM_USER_IS_FULL;
+        }
+
+        // 제한인원 마지막 참여유저가 join할때 COMPLETE로 바꾸기
+        if (running.getLimitedPeople() - 1 == running.getRunningUserList().size()) {
+
+            running.setRunningStatus(RunningStatus.COMPLETE);
+
+            runningRepository.save(running);
         }
 
         RunningUser runningUser = RunningUser.builder()
@@ -56,7 +70,7 @@ public class RunningUserService {
                 .user(hostUser)
                 .build();
 
-
+        updateRedisCache();
         return RunningUserResponse.fromEntity(runningUserRepository.save(runningUser));
     }
 
@@ -67,4 +81,11 @@ public class RunningUserService {
         return RunningUserResponse.fromEntity(runningUserList);
     }
 
+    private void updateRedisCache() {
+
+        Set<String> keysToDelete = redisTemplate.keys("running:*");
+        if (!keysToDelete.isEmpty()) {
+            redisTemplate.delete(keysToDelete);
+        }
+    }
 }

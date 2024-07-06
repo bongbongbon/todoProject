@@ -4,6 +4,7 @@ import com.example.cicdtest.common.exception.CustomException;
 import com.example.cicdtest.controller.running.request.RunningRequest;
 import com.example.cicdtest.controller.running.response.RunningResponse;
 import com.example.cicdtest.domain.running.Running;
+import com.example.cicdtest.domain.running.common.RunningStatus;
 import com.example.cicdtest.domain.users.User;
 import com.example.cicdtest.repository.RunningRepository;
 import com.example.cicdtest.repository.RunningUserRepository;
@@ -48,6 +49,7 @@ public class RunningService {
                 .limitedPeople(runningRequest.getLimitedPeople())
                 .date(runningRequest.getDate())
                 .time(runningRequest.getTime())
+                .runningStatus(RunningStatus.INCOMPLETE)
                 .build();
 
         updateRedisCache();
@@ -81,6 +83,7 @@ public class RunningService {
         List<RunningResponse> runningResponses = (List<RunningResponse>) redisTemplate.opsForValue().get(cacheKey);
 
 
+
         if (runningResponses == null) {
             List<Running> runningList = runningRepository.findRunnings(date, startLocation, minDistance, maxDistance);
             runningResponses = RunningResponse.fromEntity(runningList);
@@ -96,6 +99,35 @@ public class RunningService {
 
         return RunningResponse.fromEntity(runningRepository.findById(id)
                 .orElseThrow(() -> CustomException.RUNNING_NOT_FOUND));
+    }
+
+    public RunningResponse updateRunning(User user, Long id, RunningRequest runningRequest) {
+
+        User hostUser = userRepository.findByEmail(user.getEmail())
+                .orElseThrow(() -> CustomException.USER_NOT_FOUND);
+
+        Running currentRunning =  runningRepository.findById(id)
+                .orElseThrow(() -> CustomException.RUNNING_NOT_FOUND);
+
+        if (!currentRunning.getUser().getEmail().equals(hostUser.getEmail())) {
+            throw CustomException.USER_INFO_NOT_MATCH;
+        }
+
+
+        currentRunning.setTitle(runningRequest.getTitle());
+        currentRunning.setContent(runningRequest.getContent());
+        currentRunning.setDistance(runningRequest.getDistance());
+        currentRunning.setStartLocation(runningRequest.getStartLocation());
+        currentRunning.setStartDetailLocation(runningRequest.getStartDetailLocation());
+        currentRunning.setFinishLocation(runningRequest.getFinishLocation());
+        currentRunning.setFinishDetailLocation(runningRequest.getFinishDetailLocation());
+        currentRunning.setLimitedPeople(runningRequest.getLimitedPeople());
+        currentRunning.setDate(runningRequest.getDate());
+        currentRunning.setTime(runningRequest.getTime());
+
+        updateRedisCache();
+
+        return RunningResponse.fromEntity(runningRepository.save(currentRunning));
     }
 
     public void deleteRunningById(User user, Long id) {

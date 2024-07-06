@@ -23,4 +23,8 @@ public class ApiErrorResponse {
                 .build();
     }
 
+    public void changeMessage(String message) {
+        this.message = message;
+    }
+
 }

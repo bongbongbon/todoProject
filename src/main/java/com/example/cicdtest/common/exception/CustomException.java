@@ -18,6 +18,11 @@ public class CustomException extends RuntimeException{
     public static final CustomException TEAM_USER_IS_FULL = new CustomException(ErrorCode.TEAM_USER_IS_FULL);
     public static final CustomException YOU_ARE_RUNNING_LEADER = new CustomException(ErrorCode.YOU_ARE_RUNNING_LEADER);
     public static final CustomException YOU_ARE_NOT_RUNNING_LEADER = new CustomException(ErrorCode.YOU_ARE_NOT_RUNNING_LEADER);
+    public static final CustomException USER_INFO_NOT_MATCH = new CustomException(ErrorCode.USER_INFO_NOT_MATCH);
+    public static final CustomException FAILED_FILE_UPLOAD = new CustomException(ErrorCode.FAILED_FILE_UPLOAD);
+    public static final CustomException INTERNAL_SERVER_ERROR = new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
+    public static final CustomException INVALID_IMAGE_EXTENSION = new CustomException(ErrorCode.INVALID_IMAGE_EXTENSION);
+
 
     private final ErrorCode errorCode;
 

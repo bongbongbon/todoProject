@@ -1,7 +1,9 @@
 package com.example.cicdtest.domain.running;
 
+import com.example.cicdtest.domain.running.common.RunningStatus;
 import com.example.cicdtest.domain.runninguser.RunningUser;
 import com.example.cicdtest.domain.users.User;
+import com.example.cicdtest.domain.users.common.UserStatus;
 import com.example.cicdtest.entity.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -25,6 +27,7 @@ import java.util.stream.Collectors;
 
 @Table(name = "runnings")
 @Getter
+@Setter
 @Entity
 @Builder
 @AuditOverride(forClass = BaseEntity.class)
@@ -53,6 +56,9 @@ public class Running extends BaseEntity{
     private String finishDetailLocation;
 
     private Integer limitedPeople;
+
+    @Enumerated(EnumType.STRING)
+    private RunningStatus runningStatus;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @JsonSerialize(using = LocalDateSerializer.class)

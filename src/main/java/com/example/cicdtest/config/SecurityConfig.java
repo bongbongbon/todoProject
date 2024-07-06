@@ -50,6 +50,8 @@ public class SecurityConfig {
                         .requestMatchers("/user/**").permitAll()
                         .requestMatchers("/api/runnings/create").hasRole("USER")
                         .requestMatchers("/api/runnings/delete/**").hasRole("USER")
+                        .requestMatchers("/api/runnings/update/**").hasRole("USER")
+
                         .requestMatchers("/api/runnings/users/**").permitAll()
                         .requestMatchers("/api/runnings/get/**").permitAll()
                 )
